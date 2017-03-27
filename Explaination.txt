@@ -1,0 +1,86 @@
+Computing Cross Entropy:
+
+Training data set:
+*Using the given sample-text we first generate the training data by doing the following:
+	* removing the punctuations 
+	* changing all text to lower case
+	* removing additional space and replacing it by a single space
+	* replacing newline characters to single space
+* We then parse through the sample data we received and create 2 dictionaries,one holding the count of each trigram found and 
+	one which holds the number of bigrams found
+* Now for each trigram in the data set we compute the probability and store it in dictionary vocab_play using the function
+ 	character_probability(data)
+* We compute the probability of a trigram using:
+	(P(c1|c2c3))=count of c2c3c1 in trigram_list/count of c2c3 in bigram_list.Smoothing of 0.1 
+	is applied to this to make data more precise
+
+(P(c1|c2c3))= C(c2c3c1)+0.1 /(C(c2c3)+ 0.1* V
+ 
+
+Testing:
+* To compute the entropies of the four sentences given.We parse through the sentence and compute p which is
+	the count of trigrams+ 0.1/count of bigrams in the sentence +0.1*37 ,whose entropy we are trying to
+	find.
+* The Entropy is now Calculated as -sum of p*log(prob,2).The whole entropy is divided by length of the sentence
+
+
+Question 2:
+2.Text Categorization:
+2.1: 
+*Tokenizing the data:
+Using the given comedy and tragedy files we first generate the training data by doing the following:
+	* removing the punctuations 
+	* changing all text to lower case
+	* removing additional space and replacing it by a single space
+	* replacing newline characters to single space
+*From these words we now remove the words which appear less than 5 times in total among all the 
+files
+*We also need to remove the words which occur only in a single play as this would not help us
+categorize the plays as required
+* The final list of words has been submitted in the file 'vocabulary.txt'
+
+
+2.2:
+* Using leave-one-out cross validation we calculate the probability of each play being a probability or tragedy
+ using the naive Bayes model where we use 1 play as a test file and others as a data set
+* For this:
+	* We first generate the training data set by excluding the words that belong to the exempted file which is the test file 
+	across which the model is tested.
+	* For each word that we come across in the data set we calculate the probability of the word being a comedy and the word
+	 being a tragedy.
+	* The probability of a word being a comedy = count of this word in comedy + 0.1/ total number of words in comedy + 0.1*V
+	where 0.1 is smoothing and V is the length of Vocabulary
+	The probability of a word being a tragedy = count of this word in tragedy + 0.1/ total number of words in tragedy + 0.1*V
+	where 0.1 is smoothing and V is the length of Vocabulary
+
+	* The probabilities of each word in the test data is multiplied separately for comedy
+	(P|c)= P(w1w2w2....wn|c)* prior
+	and tragedy 
+	(P|t)= P(w1w2w2....wn|t)* prior
+	The class prior here is 0.5
+	
+	* Since the product of the words tend to 0 we change this to a summation of the log to base 2 of each of the probabilities of each word.
+	* Now we compare the (P|c) and (P|t).The value which is higher will be assumed to be the genre provided by the model
+	* Based on the likelihood ratios comedy/tragedy for each test file we check which tragedy is most likely a comedy and which comedy is
+	most likely a tragedy.
+	* The required details like  play, its true genre, the models predicted genre, and the log likelihood ratio of comedy/tragedy are provided 
+	in the file:
+	'play_details.txt'
+	
+	Based on my analysis:
+	Comedy Most likely Tragedy: mnd.txt:-30.029914792394266
+	Tragedy Most Likely Comedy: rj.txt:2747.1048390973883
+	
+2.3.
+* For each word in the vocabulary.txt we find the probability of the word being a comedy or a tragedy using:
+	The probability of a word being a comedy = count of this word in comedy + 0.1/ total number of words in comedy + 0.1*V
+	where 0.1 is smoothing and V is the length of Vocabulary
+	The probability of a word being a tragedy = count of this word in tragedy + 0.1/ total number of words in tragedy + 0.1*V
+	where 0.1 is smoothing and V is the length of Vocabulary
+* The ratio of each word is taken (P|c)/(P|t) and the log to base 2 of this is calculated and stored.
+	This is written on file:'comedy_tragedy_likelihood.txt'
+* This dictionary is ordered and the top 20 tragedies and the top 20 comedies are found based on the log likelihood ratios and written to file:
+	'top_comedy.txt' and 'top_tragedy.txt' first 20 will be tragic features and last 20 will be comic features
+
+	
+
